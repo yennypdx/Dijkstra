@@ -26,8 +26,8 @@ public:
 	void setVertEdges(list<Edge<V, E>> inVertEdges) { m_vertEdges.emplace_back(inVertEdges); }
 	void setProcessed(bool inProcessed) { processed = inProcessed; }
 public:
-	const V& getVertData() { return m_vertData; }
-	const bool& getProcessed() { return processed; }
+	V getVertData() const { return m_vertData; }
+	bool getProcessed() const { return processed; }
 	list<Edge<V, E>> getVertEdges() { return m_vertEdges; }
 	Edge<V, E> * getEdge(Vertex<V, E> * toDestination, E inData);
 public:
@@ -44,9 +44,7 @@ private:
 template<typename V, typename E>
 inline Vertex<V, E>::Vertex()
 {
-	m_inDegree = 0;
-	m_outDegree = 0;
-	m_vertData = 0;
+	m_vertData = NULL;
 	processed = false;
 	m_vertEdges = list<Edge<V, E>>();
 }
@@ -135,7 +133,7 @@ inline Edge<V, E> * Vertex<V, E>::getEdge(Vertex<V, E> * toDestination, E inData
 	bool found = false;
 	list<Edge<V, E>>::iterator it = m_vertEdges.begin();
 
-	while (found == false & it != m_vertEdges.end()) {
+	while (found == false && it != m_vertEdges.end()) {
 		Edge<V, E> * tempEdge = &(*it);
 		E tempValue = tempEdge->getEdgeData();
 		if ((inData == tempValue) && toDestination->getVertData() == (tempEdge->getEdgeDestination()->getVertData())) {
