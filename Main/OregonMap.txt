@@ -1,0 +1,47 @@
+Klamath Falls,Hwy 140 and Dead Indian Memorial Road Junction,Hwy 140,31
+Klamath Falls,Keno,Hwy 66,9
+Klamath Falls,Hwy 97 and Hwy 62 Junction,Hwy 97,23
+Keno,Clover Creek and Dead Indian Memorial Road Junction,Clover Creek,20
+Keno,Ashland,Hwy 66,48
+Hwy 140 and Dead Indian Memorial Road Junction,Clover Creek and Dead Indian Memorial Road Junction,Dead Indian Memorial Road,7
+Clover Creek and Dead Indian Memorial Road Junction,Ashland,Dead Indian Memorial Road,43
+Ashland,Medford,I-5,12
+Hwy 140 and Dead Indian Memorial Road Junction,Medford,Hwy 140,36
+Hwy 97 and Hwy 62 Junction,Hwy 62 and Hwy 230 Junction,Hwy 62,49
+Hwy 62 and Hwy 230 Junction,Medford,Hwy 62,56
+Hwy 97 and Hwy 62 Junction,Hwy 97 and Hwy 138 Junction,Hwy 97,40
+Hwy 97 and Hwy 138 Junction,Chemult,Hwy 97,9
+Chemult,Hwy 97 and Hwy 58 Junction,Hwy 97,8
+Hwy 97 and Hwy 58 Junction,Bend,Hwy 97,57
+Bend,Sisters,Hwy 20,21
+Sisters,Hwy 242 and Hwy 126 Junction,Hwy 242,39
+Hwy 242 and Hwy 126 Junction,Eugene,Hwy 126,53
+Hwy 97 and Hwy 58 Junction,Oakridge,Hwy 58,51
+Oakridge,Hwy 58 and I-5 Junction,Hwy 58,36
+Hwy 97 and Hwy 138 Junction,Hwy 138 and Hwy 230 Junction,Hwy 138,19
+Hwy 138 and Hwy 230 Junction,Hwy 62 and Hwy 230 Junction,Hwy 230,24
+Hwy 138 and Hwy 230 Junction,Glide,Hwy 138,61
+Glide,Roseburg,Hwy 138,18
+Medford,Grants Pass,I-5,29
+Grants Pass,Crescent City,Hwy 199,82
+Crescent City,Brookings,Hwy 101,19
+Grants Pass,Winston,I-5,58
+Winston,Roseburg,I-5,10
+Winston,Coquille,Hwy 42,64
+Coquille,Hwy 101 and Hwy 42 Junction,Hwy 42,11
+Brookings,Gold Beach,Hwy 101,31
+Gold Beach,Port Orford,Hwy 101,28
+Port Orford,Bandon,Hwy 101,30
+Bandon,Hwy 101 and Hwy 42 Junction,Hwy 101,18
+Hwy 101 and Hwy 42 Junction,Coos Bay,Hwy 101,6
+Coos Bay,Lakeside,Hwy 101,16
+Lakeside,Reedsport,Hwy 101,11
+Roseburg,Sutherlin,I-5,11
+Sutherlin,Elkton,Hwy 138,27
+Sutherlin,Drain,I-5,27
+Drain,Elkton,Hwy 38,20
+Elkton,Reedsport,Hwy 38,37
+Drain,Hwy 58 and I-5 Junction,I-5,27
+Hwy 58 and I-5 Junction,Eugene,I-5,3
+Reedsport,Florence,Hwy 101,21
+Eugene,Florence,Hwy 126,61
