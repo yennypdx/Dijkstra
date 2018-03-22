@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <stack>
-#include "DijkstraAlg.h"
 using namespace std;
 
 class ShortestPath
@@ -31,8 +30,8 @@ private:
 
 inline ShortestPath::ShortestPath()
 {
-	m_time = 0;
-	m_distance = 0;
+	m_time = 0.0;
+	m_distance = 0.0;
 }
 
 #endif

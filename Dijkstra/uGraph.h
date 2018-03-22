@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #pragma once
 
 #ifndef UNDIRGRAPH_H
@@ -24,23 +25,23 @@ class uGraph
 {
 public:
 	uGraph();
-	uGraph(V inVertex);
+	uGraph(V inLocation);
 	~uGraph();
 public:
 	uGraph(const uGraph<V, E> & inCopy);
 	uGraph<V, E> & operator=(const uGraph<V, E> & inRhs);
 public:
-	void insertVertex(V inData);
-	void deleteVertex(V inData);
-	void insertEdge(V fromOrigin, V toDestination, E inData1, E inData2);
-	void deleteEdge(V fromOrigin, V toDestination, E inData1, E inData2);
+	void insertVertex(V inLocation);
+	void deleteVertex(V inLocation);
+	void insertEdgeGraph(V fromOrigin, V toDestination, E path, int miles);
+	void deleteEdgeGraph(V fromOrigin, V toDestination, E path, int miles);
 public:
-	void breadthfirstSearch(V inData);
-	void depthfirstSearch(V inData);
+	void breadthfirstSearch(V inLocation);
+	void depthfirstSearch(V inLocation);
 public:
 	int getVertCount() { return m_vertCount; }
 	list<Vertex<V, E>> getVertList() { return m_adjacent; }
-	Vertex<V, E> * getVert(V inData);
+	Vertex<V, E> * getVert(V inLocation);
 	bool isEmpty();
 
 protected:
@@ -58,9 +59,9 @@ inline uGraph<V, E>::uGraph()
 }
 
 template<typename V, typename E>
-inline uGraph<V, E>::uGraph(V inVertex)
+inline uGraph<V, E>::uGraph(V inLocation)
 {
-	m_adjacent = list<Vertex<V, E>>(inVertex);
+	m_adjacent = list<Vertex<V, E>>(inLocation);
 }
 
 template<typename V, typename E>
@@ -95,21 +96,35 @@ inline uGraph<V, E>& uGraph<V, E>::operator=(const uGraph<V, E>& inRhs)
 }
 
 template<typename V, typename E>
-inline void uGraph<V, E>::insertVertex(V inData)
+inline void uGraph<V, E>::insertVertex(V inLocation)
 {
-	m_adjacent.emplace_back(inData);
-	m_vertCount++;
+	bool exist = false;
+	list<Vertex<V, E>>::iterator it = m_adjacent.begin();
+	while (exist == false && it != m_adjacent.end()) {
+		Vertex<V, E> * tempVert = &(*it);
+		if (inLocation == tempVert->getVertData()) {
+			exist = true;
+		}
+		else {
+			it++;
+		}
+	}
+
+	if (exist == false)	{
+		m_adjacent.emplace_back(inLocation);
+		m_vertCount++;
+	}
 }
 
 template<typename V, typename E>
-inline void uGraph<V, E>::deleteVertex(V inData)
+inline void uGraph<V, E>::deleteVertex(V inLocation)
 {
 	bool deleted = false;
 	list<Vertex<V, E>>::iterator it = m_adjacent.begin();
 	while (deleted == false && it != m_adjacent.end())
 	{
 		Vertex<V, E> * tempVert = &(*it);
-		if (inData == tempVert->getVertData())
+		if (inLocation == tempVert->getVertData())
 		{
 			m_adjacent.erase(it);
 			deleted = true;
@@ -120,36 +135,29 @@ inline void uGraph<V, E>::deleteVertex(V inData)
 		}
 	}
 
-	if (deleted == false)
-	{
-		throw Exception("Exception caught: Vertex doesn't exist.");
+	if (deleted == false)	{
+		throw runtime_error("Exception caught: Vertex doesn't exist.");
 	}
 }
 
 template<typename V, typename E>
-inline void uGraph<V, E>::insertEdge(V fromOrigin, V toDestination, E inData1, E inData2)
+inline void uGraph<V, E>::insertEdgeGraph(V fromOrigin, V toDestination, E path, int miles)
 {
-	Vertex<V, E> * vOriginPtr = getVert(fromOrigin);
-	Vertex<V, E> * vDestPtr = getVert(toDestination);
-
-	vOriginPtr->insertEdge(vDestPtr, inData1);
-	vOriginPtr->insertEdge(vDestPtr, inData2);
-
+	Vertex<V, E> *vOrigin = getVert(fromOrigin);
+	Vertex<V, E> *vDestination = getVert(toDestination);
+	vOrigin->insertEdge(path, miles, vDestination);
 }
 
 template<typename V, typename E>
-inline void uGraph<V, E>::deleteEdge(V fromOrigin, V toDestination, E inData1, E inData2)
+inline void uGraph<V, E>::deleteEdgeGraph(V fromOrigin, V toDestination, E path, int miles)
 {
-	Vertex<V, E> * vOriginPtr = getVert(fromOrigin);
-	Vertex<V, E> * vDestPtr = getVert(toDestination);
+	Vertex<V, E> *vOrigin = getVert(fromOrigin);
+	Vertex<V, E> *vDestination = getVert(toDestination);
 
-	if (vOriginPtr != nullptr && vDestPtr != nullptr)
-	{
-		vOriginPtr->deleteEdge(vDestPtr, inData1);
-		vOriginPtr->deleteEdge(vDestPtr, inData2);
+	if (vOrigin != nullptr && vDestination != nullptr)	{
+		vOrigin->deleteEdge(path, miles, vDestination);
 	}
-	else
-	{
+	else	{
 		throw runtime_error("Exception caught: Attempting to delete edge from invalid vertex.");
 	}
 }
@@ -160,11 +168,13 @@ inline Vertex<V, E> * uGraph<V, E>::getVert(V inData)
 	Vertex<V, E> *outVert = nullptr;
 	bool found = false;
 	list<Vertex<V, E>>::iterator it = m_adjacent.begin();
-	while (it != m_adjacent.end() && found == false) {
+
+	while (it != m_adjacent.end() && found != true) {
 		Vertex<V, E> *tempVert = &(*it);
 		V tempValue = tempVert->getVertData();
 		if (inData == tempValue) {
-			outVert = &(*it);
+			//outVert = &(*it);
+			outVert = tempVert;
 			found = true;
 		}
 		else
@@ -172,7 +182,7 @@ inline Vertex<V, E> * uGraph<V, E>::getVert(V inData)
 			it++;
 		}
 	}
-
+	
 	return outVert;
 }
 

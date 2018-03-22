@@ -29,11 +29,11 @@ public:
 	V getVertData() const { return m_vertData; }
 	bool getProcessed() const { return processed; }
 	list<Edge<V, E>> getVertEdges() { return m_vertEdges; }
-	Edge<V, E> * getEdge(Vertex<V, E> * toDestination, E inData);
+	Edge<V, E> * getEdge(E inData, int inWeight, Vertex<V, E> * toDestination);
 public:
-	void deleteEdge(Vertex<V, E> * toDestination, E inData);
-	void insertEdge(Vertex<V, E> * toDestination, E inData);
-	bool edgeExists(Vertex<V, E> * toDestination, E inData);
+	void deleteEdge(E inData, int inWeight, Vertex<V, E> * toDestination);
+	void insertEdge(E inData, int inWeight, Vertex<V, E> * toDestination);
+	bool edgeExists(E inData, int inWeight, Vertex<V, E> * toDestination);
 
 private:
 	V  m_vertData;
@@ -44,7 +44,6 @@ private:
 template<typename V, typename E>
 inline Vertex<V, E>::Vertex()
 {
-	m_vertData = NULL;
 	processed = false;
 	m_vertEdges = list<Edge<V, E>>();
 }
@@ -78,9 +77,9 @@ inline Vertex<V, E>& Vertex<V, E>::operator=(const Vertex<V, E> inRhs)
 }
 
 template<typename V, typename E>
-inline void Vertex<V, E>::deleteEdge(Vertex<V, E> * toDestination, E inData)
+inline void Vertex<V, E>::deleteEdge(E inData, int inWeight, Vertex<V, E> * toDestination)
 {
-	if (edgeExists(toDestination, inData) == true)	{
+	if (edgeExists(inData, inWeight, toDestination) == true)	{
 		bool deleted = false;
 		list<Edge<V, E>>::iterator it = m_vertEdges.begin();
 		while (deleted == false && it != m_vertEdges.end())
@@ -102,10 +101,10 @@ inline void Vertex<V, E>::deleteEdge(Vertex<V, E> * toDestination, E inData)
 }
 
 template<typename V, typename E>
-inline void Vertex<V, E>::insertEdge(Vertex<V, E> * toDestination, E inData)
+inline void Vertex<V, E>::insertEdge(E inData, int inWeight, Vertex<V, E> * toDestination)
 {
-	if (edgeExists(toDestination, inData) == false)	{
-		m_vertEdges.emplace_back(toDestination, inData);
+	if (edgeExists(inData, inWeight, toDestination) == false)	{
+		m_vertEdges.emplace_back(Edge<V, E>(inData, inWeight, toDestination));
 	}
 	else	{
 		throw runtime_error("Exception : Edge already exists.");
@@ -113,10 +112,10 @@ inline void Vertex<V, E>::insertEdge(Vertex<V, E> * toDestination, E inData)
 }
 
 template<typename V, typename E>
-inline bool Vertex<V, E>::edgeExists(Vertex<V, E> * toDestination, E inData)
+inline bool Vertex<V, E>::edgeExists(E inData, int inWeight, Vertex<V, E> * toDestination)
 {
 	bool exists = false;
-	Edge<V, E> * tempEdge = getEdge(toDestination, inData);
+	Edge<V, E> * tempEdge = getEdge(inData, inWeight, toDestination);
 
 	if (tempEdge != nullptr)
 	{
@@ -127,7 +126,7 @@ inline bool Vertex<V, E>::edgeExists(Vertex<V, E> * toDestination, E inData)
 }
 
 template<typename V, typename E>
-inline Edge<V, E> * Vertex<V, E>::getEdge(Vertex<V, E> * toDestination, E inData)
+inline Edge<V, E> * Vertex<V, E>::getEdge(E inData, int inWeight, Vertex<V, E> * toDestination)
 {
 	Edge<V, E> *outEdge = nullptr;
 	bool found = false;

@@ -1,1 +1,5 @@
-﻿
+﻿  stdafx.cpp
+  DjikstraAlg.cpp
+  Dijkstra.cpp
+  Generating Code...
+  Dijkstra.vcxproj -> C:\Repos\Dijkstra\x64\Debug\Dijkstra.lib
