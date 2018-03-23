@@ -62,7 +62,7 @@ inline Vertex<V, E>::Vertex(const Vertex<V, E>& inCopy)
 	m_vertData = inCopy.getVertData();
 	processed = inCopy.getProcessed();
 
-	for (list<Edge<V, E>>::iterator it = m_vertEdges.begin(); it != m_vertEdges.end(); ++it) {
+	for (list<Edge<V, E>>::const_iterator it = inCopy.m_vertEdges.begin(); it != inCopy.m_vertEdges.end(); ++it) {
 		m_vertEdges.emplace_back(*it);
 	}
 }
@@ -72,6 +72,11 @@ inline Vertex<V, E>& Vertex<V, E>::operator=(const Vertex<V, E> inRhs)
 {
 	if (this != &inRhs) {
 		m_vertData = inRhs.m_vertData;
+		processed = inRhs.getProcessed();
+
+		for (list<Edge<V, E>>::const_iterator it = inRhs.m_vertEdges.begin(); it != inRhs.m_vertEdges.end(); ++it) {
+			m_vertEdges.emplace_back(*it);
+		}
 	}
 	return *this;
 }

@@ -1,4 +1,0 @@
-Beaverton,Tualatin,Hwy 26,8
-Beaverton,Lake Oswego,Hwy 217,7
-Tualatin,Wilsonville,Hwy 26,3
-Lake Oswego,Wilsonville,I-5,4

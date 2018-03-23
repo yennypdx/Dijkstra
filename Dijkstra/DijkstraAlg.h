@@ -26,9 +26,6 @@ public:
 	void OverloadingDjikstraGraph(string inFile);
 public:
 	ShortestPath FindShortestPath(string inOrigin, string inDestination);
-	void ProcessTables(int * distance, int * predecessor, Vertex<string, string> * vertices, int edgeToNextVerticesIndex);
-	ShortestPath GettingRoute(int * distance, int * predecessor, Vertex<string, string> * vertices, int destinationIndex);
-	double GetTotalTime(int * distance, int * predecessor, Vertex<string, string> * vertices, stack<int> * RoutingIndexStack);
 public:
 	uGraph<string, string> & getDijkstraGraph() { return m_Dijkstra; }
 

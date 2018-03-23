@@ -146,6 +146,7 @@ inline void uGraph<V, E>::insertEdgeGraph(V fromOrigin, V toDestination, E path,
 	Vertex<V, E> *vOrigin = getVert(fromOrigin);
 	Vertex<V, E> *vDestination = getVert(toDestination);
 	vOrigin->insertEdge(path, miles, vDestination);
+	vDestination->insertEdge(path, miles, vOrigin);
 }
 
 template<typename V, typename E>
@@ -156,6 +157,7 @@ inline void uGraph<V, E>::deleteEdgeGraph(V fromOrigin, V toDestination, E path,
 
 	if (vOrigin != nullptr && vDestination != nullptr)	{
 		vOrigin->deleteEdge(path, miles, vDestination);
+		vDestination->insertEdge(path, miles, vOrigin);
 	}
 	else	{
 		throw runtime_error("Exception caught: Attempting to delete edge from invalid vertex.");

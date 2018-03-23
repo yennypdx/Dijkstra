@@ -50,34 +50,34 @@ void Dijkstra::OverloadingDjikstraGraph(string inFile)
 	}
 }
 
-ShortestPath Dijkstra::FindShortestPath(string inOrigin, string inDestination)
+ShortestPath Dijkstra::FindShortestPath(string inOrigin, string inDestination)	//checked
 {
-	int numOfVerts = m_Dijkstra.getVertList().size();
-	Vertex<string, string> * vertices = new Vertex<string, string>[numOfVerts];
-	//initializers
 	int initNum = -1;
 	int originIndex = -1;
 	int destinationIndex = -1;
-
-	//arrays for dijkstra table
-	int * distance = new int[numOfVerts];
-	int * predecessor = new int[numOfVerts]; 
+	int minDistanceIndex = 0;
+	int minDistance = -1;
+	int numOfVerts = m_Dijkstra.getVertList().size();
 	
-	//assigning index to vertices
-	int i = 0;
+	Vertex<string, string> * vertices = new Vertex<string, string>[numOfVerts];
+	string * roadtypes = new string[numOfVerts];
+	double * time = new double[numOfVerts];
+	
+	/*---------------------Dijkstra TABLE Start--------------------*/
+	int * distance = new int[numOfVerts]; 
+	int * predecessor = new int[numOfVerts]; 
+	for (int i = 0; i < numOfVerts; i++) { 
+		distance[i] = initNum;
+		predecessor[i] = initNum;
+	}
+	//populate vertices on the TABLE
 	list<Vertex<string, string>> tempVerts = m_Dijkstra.getVertList();
+	int i = 0;
 	for (auto v : tempVerts) {
 		vertices[i] = *&v;
 		i++;
 	}
-
-	//initialize the two table with -1
-	for (int i = 0; i < numOfVerts; i++) {
-		distance[i] = initNum;
-		predecessor[i] = initNum;
-	}
-
-	//find origin and destination
+	//identifying the origin & destination indexes
 	for (int i = 0; i < numOfVerts; i++) {
 		if (vertices[i].getVertData() == inOrigin) {
 			originIndex = i;
@@ -87,136 +87,74 @@ ShortestPath Dijkstra::FindShortestPath(string inOrigin, string inDestination)
 		}
 	}
 	
-	//zero the distance of the origin
+	if (originIndex == -1 || destinationIndex == -1) {
+		throw runtime_error("Bug found.");
+	}
+	time[originIndex] = 0;
 	distance[originIndex] = 0;
 	
-	//get the edges of origin
-	auto edgesOfOrigin = vertices[originIndex].getVertEdges();
-	int edgeToNextVerticesIndex = 0;
-
-	//update distance array for each edges
-	for (auto edge : edgesOfOrigin) {
-		for (int val = 0; val < edgesOfOrigin.size(); val++) {
-			if (edge.getEdgeDestination()->getVertData() == vertices[val].getVertData()) {
-				distance[val] = edge.getEdgeWeight();
-				predecessor[val] = originIndex;
+	//DIJKSTRA algorithm start
+	for (int counter = 0; counter < numOfVerts && vertices[destinationIndex].getProcessed() == false; counter++)	{
+		//setting DISTANCE: minimal distance == distance at array[idx]
+		for (int idx = 0; idx < numOfVerts; idx++) {
+			if (vertices[idx].getProcessed() == false && distance[idx] != -1 &&
+				(minDistance == -1 || distance[idx] < minDistance)) {
+				minDistance = distance[idx];
+				minDistanceIndex = idx;
 			}
 		}
-	}
-	//update process status of origin
-	vertices[originIndex].setProcessed(true);
+		//setting PATH: copy list of edges to EdgeList
+		auto edgeListOfVertex = vertices[minDistanceIndex].getVertEdges();
+		for (auto edge : edgeListOfVertex) {
 
-	ProcessTables(distance, predecessor, vertices, edgeToNextVerticesIndex);
-	GettingRoute(distance, predecessor, vertices, destinationIndex);
-
-	//return ShortestPath
-	ShortestPath routeInformation;
-	routeInformation.setDistance(distance[destinationIndex]);
-
-	return routeInformation;
-}
-
-void Dijkstra::ProcessTables(int * distance, int * predecessor, Vertex<string, string> * vertices, int edgeToNextVerticesIndex)
-{
-	bool vertProcess;
-	//do process table 
-	do {
-		vertProcess = false;
-		int idx = 0;
-		int shortestIdx = -1;
-		//find shortest distance of (unprocessed vertices and not -1)
-		for (idx = 0; idx < m_Dijkstra.getVertList().size(); idx++) {
-			if (vertices[idx].getProcessed() == false && distance[idx] != -1) {
-				if (shortestIdx == -1 || distance[idx] < shortestIdx) {
-					vertProcess = true;
-					shortestIdx = idx;
+			//find next index (shortest) to process
+			int edgeToNextVerticesIndex;
+			for (int id = 0; id < numOfVerts; id++) {
+				if (edge.getEdgeDestination()->getVertData() == vertices[id].getVertData()) {
+					edgeToNextVerticesIndex = id;
 				}
 			}
-		}
-
-		if (vertProcess == true) {
-			//get the edges of the "shortestVertex"
-			auto shortestVertexEdges = vertices[shortestIdx].getVertEdges();
-
-			//update distance array for each edges
-			for (auto edge : shortestVertexEdges) {
-				for (int val = 0; val < shortestVertexEdges.size(); val++) {
-					if (edge.getEdgeDestination()->getVertData() == vertices[val].getVertData()) {
-						//ONLY update if new value is shorter
-						if (edge.getEdgeWeight() < distance[val]) {
-							distance[val] = edge.getEdgeWeight();
-							predecessor[val] = shortestIdx;
-						}
-					}
-				}
-			}
-			//update process status of the "shortestVertex"
-			vertices[shortestIdx].setProcessed(true);
-		}
-	} while (vertProcess == true);
-}
-
-ShortestPath Dijkstra::GettingRoute(int * distance, int * predecessor, Vertex<string, string> * vertices, int destinationIndex)
-{
-	stack<int> * RoutingIndexStack = new stack<int>();
-	stack<string>stringRIS;
-	int CurrentPredecessorValue = predecessor[destinationIndex];
-	string vertexDataForStack = vertices[destinationIndex].getVertData();
-
-	//push the index of the destination onto the "RoutingIndexStack" (bottom of stack)
-	RoutingIndexStack->emplace(CurrentPredecessorValue);
-	stringRIS.push(vertexDataForStack);
-
-	while (CurrentPredecessorValue != -1) {
-		for (int pts = 0; pts < RoutingIndexStack->size(); pts++) {
-			//get the "PredecessorValue" of the top of "RIS"
-			CurrentPredecessorValue = predecessor[CurrentPredecessorValue];
-
-			//push the "PredecessorValue" onto the "RIS"
-			RoutingIndexStack->push(CurrentPredecessorValue);
-
-			//get the string version of the "CurrentPredecessorValue"
-			vertexDataForStack = vertices[CurrentPredecessorValue].getVertData();
-			stringRIS.push(vertexDataForStack);
-		}
-	}
-	GetTotalTime(distance, predecessor, vertices, RoutingIndexStack);
-
-	ShortestPath routeInformation;
-	routeInformation.setDestination(stringRIS);
-	return routeInformation;
-}
-
-double Dijkstra::GetTotalTime(int * distance, int * predecessor, Vertex<string, string> * vertices, stack<int> * RoutingIndexStack)
-{
-	int topOfStackValue;
-	int numOfVerts = m_Dijkstra.getVertList().size();
-	string * roadtypes = new string[numOfVerts];
-	double totalTime = 0.0;
-
-	//while "RIS" is not empty
-	while (!RoutingIndexStack->empty()) {
-		//pop the top of the stack (TOS) == Origin
-		topOfStackValue = RoutingIndexStack->top();
-		RoutingIndexStack->pop();
-		//Look at current TOS for edge data if equal
-		list<Edge<string,string>> tosEdgeList = vertices[topOfStackValue].getVertEdges();
-		//Compare Origin's Edge Data with CTOS to get the right ROADTYPE
-		auto edgeDestinationToSearch = RoutingIndexStack->top(); // Destination
-		for (auto edge : tosEdgeList)	{
-			if (edge.getEdgeDestination()->getVertData() == vertices[edgeDestinationToSearch].getVertData()) {
+			//calculating DISTANCE: total = local weight + accumulated weight along path
+			int totalDistance = distance[minDistanceIndex] + edge.getEdgeWeight();
+			if (totalDistance < distance[edgeToNextVerticesIndex] || distance[edgeToNextVerticesIndex] == -1) {
+				//updating all arrays value
+				distance[edgeToNextVerticesIndex] = totalDistance;
+				predecessor[edgeToNextVerticesIndex] = minDistanceIndex;
+				roadtypes[edgeToNextVerticesIndex] = edge.getEdgeData();
+	
 				//roadtype-based time calculation
-				if (edge.getEdgeData() == "I-5") {
-					double time = edge.getEdgeWeight() / IFIVE;
-					totalTime += time;
+				if (roadtypes[edgeToNextVerticesIndex] == "I-5") {
+					time[edgeToNextVerticesIndex] = (time[minDistanceIndex]) + (edge.getEdgeWeight() / IFIVE);
 				}
 				else {
-					double time = edge.getEdgeWeight() / HWY;
-					totalTime += time;
+					time[edgeToNextVerticesIndex] = (time[minDistanceIndex]) + (edge.getEdgeWeight() / HWY);
 				}
 			}
 		}
+		vertices[minDistanceIndex].setProcessed(true);
+		minDistance = -1;
 	}
 
-	return totalTime;
+	//setting PATH ROUTE
+	int predecessorValue = destinationIndex;
+	stack<string> route;
+	while (predecessorValue != -1) {
+		if (!roadtypes[predecessorValue].empty()) {
+			if (route.empty()) {
+				route.push(roadtypes[predecessorValue]);
+			}
+			else if (roadtypes[predecessorValue] != route.top()) {
+				route.push(roadtypes[predecessorValue]);
+			}
+		}
+		predecessorValue = predecessor[predecessorValue];
+	}
+	
+	//building route
+	ShortestPath routeInformation;
+	routeInformation.setDestination(route);
+	routeInformation.setDistance(distance[destinationIndex]);
+	routeInformation.setTime(time[destinationIndex]);
+	
+	return routeInformation;
 }

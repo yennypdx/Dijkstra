@@ -34,8 +34,5 @@
     <Text Include="OregonMap.txt">
       <Filter>Source Files</Filter>
     </Text>
-    <Text Include="TestFile.txt">
-      <Filter>Source Files</Filter>
-    </Text>
   </ItemGroup>
 </Project>
